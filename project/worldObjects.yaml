@@ -1,0 +1,24 @@
+
+template: WorldObject/WorldObject.cs.jinja2
+destination: WorldObject
+
+items:
+- name: ChemistryTable
+  locName: Chemistry Table
+  template: WorldObject/Table.cs.jinja2
+
+  description: Table used to experiment with chemicals
+
+  ecopedia:
+    category: Work Stations
+    page: Products
+
+- name: AlchemyTable
+  locName: Alchemy Table
+  template: WorldObject/Table.cs.jinja2
+
+  description: Table used to experiment with the dark arts
+
+  ecopedia:
+    category: Work Stations
+    page: Products

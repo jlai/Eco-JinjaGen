@@ -1,0 +1,26 @@
+{% extends "WorldObject/WorldObject.cs.jinja2" %}
+
+{% block worldObjectAttributes %}
+    {{ super() }}
+    [RequireComponent(typeof(OnOffComponent))]
+    [RequireComponent(typeof(PropertyAuthComponent))]
+    [RequireComponent(typeof(MinimapComponent))]
+    [RequireComponent(typeof(LinkComponent))]
+    [RequireComponent(typeof(CraftingComponent))]
+    [RequireComponent(typeof(SolidGroundComponent))]
+    [RequireComponent(typeof(RoomRequirementsComponent))]
+    [RequireRoomContainment]
+    [RequireRoomVolume(25)]
+    [RequireRoomMaterialTier(0.5f)]
+{% endblock worldObjectAttributes %}
+
+{% block worldObjectInitialize %}
+{% filter matchindent(super()) %}
+    protected override void Initialize()
+    {
+        this.ModsPreInitialize();
+        this.GetComponent<MinimapComponent>().Initialize(Localizer.DoStr("Research"));
+        this.ModsPostInitialize();
+    }
+{% endfilter %}
+{% endblock worldObjectInitialize %}

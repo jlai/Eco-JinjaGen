@@ -1,0 +1,87 @@
+{% extends "Common/BaseItem.cs.jinja2" %}
+{% block using %}
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using Eco.Core.Items;
+    using Eco.Gameplay.Blocks;
+    using Eco.Gameplay.Components;
+    using Eco.Gameplay.Components.Auth;
+    using Eco.Gameplay.DynamicValues;
+    using Eco.Gameplay.Economy;
+    using Eco.Gameplay.Housing;
+    using Eco.Gameplay.Interactions;
+    using Eco.Gameplay.Items;
+    using Eco.Gameplay.Modules;
+    using Eco.Gameplay.Minimap;
+    using Eco.Gameplay.Objects;
+    using Eco.Gameplay.Players;
+    using Eco.Gameplay.Property;
+    using Eco.Gameplay.Skills;
+    using Eco.Gameplay.Systems.TextLinks;
+    using Eco.Gameplay.Pipes.LiquidComponents;
+    using Eco.Gameplay.Pipes.Gases;
+    using Eco.Gameplay.Systems.Tooltip;
+    using Eco.Shared;
+    using Eco.Shared.Math;
+    using Eco.Shared.Localization;
+    using Eco.Shared.Serialization;
+    using Eco.Shared.Utils;
+    using Eco.Shared.View;
+    using Eco.Shared.Items;
+    using Eco.Gameplay.Pipes;
+    using Eco.World.Blocks;
+    using Eco.Gameplay.Housing.PropertyValues;
+{% endblock using %}
+{% block worldObject %}
+    {%- block worldObjectAttributes -%}
+    [Serialized]
+    {%- endblock worldObjectAttributes -%}
+    {% block worldObjectClass %}
+    public partial class {{ item.name }}Object : WorldObject, IRepresentsItem
+    {
+        {% block worldObjectFields %}
+        public override LocString DisplayName { get { return Localizer.DoStr("{{ item.locName }}"); } }
+        public override TableTextureMode TableTexture => TableTextureMode.Paper;
+        public virtual Type RepresentedItemType { get { return typeof({{ item.name }}Item); } }
+        {% endblock worldObjectFields %}
+
+        {% block worldObjectInitialize %}
+        protected override void Initialize()
+        {
+            this.ModsPreInitialize();
+            this.ModsPostInitialize();
+        }
+        {% endblock worldObjectInitialize %}
+
+        public override void Destroy()
+        {
+            base.Destroy();
+        }
+
+        /// <summary>Hook for mods to customize WorldObject before initialization. You can change housing values here.</summary>
+        partial void ModsPreInitialize();
+        /// <summary>Hook for mods to customize WorldObject after initialization.</summary>
+        partial void ModsPostInitialize();
+    }
+    {% endblock worldObjectClass %}
+{% endblock worldObject %}
+{% block item %}
+    {% block itemAttributes %}
+    [Serialized]
+    [LocDisplayName("{{ item.locName }}")]
+    [Ecopedia("Work Stations", "Researching", createAsSubPage: true, display: InPageTooltip.DynamicTooltip)]
+    {% endblock itemAttributes %}
+    {% block itemClass %}
+    public partial class {{ item.name }}Item : WorldObjectItem<{{ item.name }}Object>, IPersistentData
+    {
+        {% block itemFields %}
+        public override LocString DisplayDescription => Localizer.DoStr("{{ item.description }}");
+        {% endblock itemFields %}
+
+        {% block itemFieldMethods %}
+        [Serialized, TooltipChildren] public object PersistentData { get; set; }
+        {% endblock itemFieldMethods %}
+    }
+    {% endblock itemClass %}
+{% endblock item %}
