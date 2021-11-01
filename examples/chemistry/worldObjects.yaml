@@ -1,11 +1,10 @@
 
 template: WorldObject/WorldObject.cs.jinja2
-destination: WorldObject
+directory: WorldObject
 
 items:
 - name: ChemistryTable
-  locName: Chemistry Table
-  template: WorldObject/Table.cs.jinja2
+  template: WorldObject/CraftingTable.cs.jinja2
 
   description: Table used to experiment with chemicals
 
@@ -14,11 +13,12 @@ items:
     page: Products
 
 - name: AlchemyTable
-  locName: Alchemy Table
-  template: WorldObject/Table.cs.jinja2
+  template: WorldObject/CraftingTable.cs.jinja2
 
   description: Table used to experiment with the dark arts
 
   ecopedia:
     category: Work Stations
     page: Products
+
+- name: AmmoniaReactor

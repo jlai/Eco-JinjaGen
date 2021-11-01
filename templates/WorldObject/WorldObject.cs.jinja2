@@ -34,14 +34,14 @@
     using Eco.Gameplay.Housing.PropertyValues;
 {% endblock using %}
 {% block worldObject %}
-    {%- block worldObjectAttributes -%}
+    {% block worldObjectAttributes %}
     [Serialized]
-    {%- endblock worldObjectAttributes -%}
+    {% endblock worldObjectAttributes %}
     {% block worldObjectClass %}
     public partial class {{ item.name }}Object : WorldObject, IRepresentsItem
     {
         {% block worldObjectFields %}
-        public override LocString DisplayName { get { return Localizer.DoStr("{{ item.locName }}"); } }
+        public override LocString DisplayName { get { return Localizer.DoStr("{{ locName(item) }}"); } }
         public override TableTextureMode TableTexture => TableTextureMode.Paper;
         public virtual Type RepresentedItemType { get { return typeof({{ item.name }}Item); } }
         {% endblock worldObjectFields %}
@@ -69,7 +69,7 @@
 {% block item %}
     {% block itemAttributes %}
     [Serialized]
-    [LocDisplayName("{{ item.locName }}")]
+    [LocDisplayName("{{ locName(item) }}")]
     [Ecopedia("Work Stations", "Researching", createAsSubPage: true, display: InPageTooltip.DynamicTooltip)]
     {% endblock itemAttributes %}
     {% block itemClass %}

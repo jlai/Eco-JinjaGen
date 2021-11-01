@@ -1,0 +1,3 @@
+{% macro locName(item) -%}
+    {{ item.locName or (item.name | camelCaseToWords) }}
+{%- endmacro %}

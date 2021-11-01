@@ -1,0 +1,14 @@
+
+directory: Tech
+
+items:
+- name: Chemist
+  template: Tech/Profession.cs.jinja2
+
+- name: Alchemy
+  template: Tech/Specialty.cs.jinja2
+  profession: Chemist
+
+- name: Chemistry
+  template: Tech/Specialty.cs.jinja2
+  profession: Chemist

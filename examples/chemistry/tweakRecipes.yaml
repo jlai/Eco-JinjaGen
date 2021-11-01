@@ -1,0 +1,11 @@
+template: Recipe/TweakRecipe.cs.jinja2
+
+items:
+- name: CopperConcentrate
+  directory: AutoGen/Block
+
+  ingredients:
+    - item: CrushedCopperOre
+      count: 7
+    - item: SulfuricAcid
+      count: 1

@@ -7,6 +7,7 @@ import re
 
 userCodePath = r"E:\Program Files\Steam\steamapps\common\Eco\Eco_Data\Server\Mods\UserCode"
 leadingSpaces = re.compile('[ \t]+')
+camelCaseWords = re.compile('[A-Z][a-z]+')
 
 def escapeQuotesFilter(value):
     return value.replace('"', "\'") if value else ""
@@ -29,6 +30,9 @@ def matchindentFilter(value, codeToMatch):
         # TODO unindent
         return value
 
+def camelCaseToWords(value):
+    return ' '.join(camelCaseWords.findall(value))
+
 env = Environment(
     loader=FileSystemLoader("templates"),
     autoescape=select_autoescape(),
@@ -39,28 +43,35 @@ env = Environment(
 env.filters['escape'] = escapeQuotesFilter
 env.filters['defaults'] = defaultsFilter
 env.filters['matchindent'] = matchindentFilter
+env.filters['camelCaseToWords'] = camelCaseToWords
 
 def parseFile(filename):
     with open(filename) as f:
         fileDesc = yaml.safe_load(f)
 
-        templateName = fileDesc['template']
-        destination = fileDesc['destination']
-
-        defaultTemplate = env.get_template(templateName)
+        defaultTemplateName = fileDesc.get('template')
+        defaultRelativeDir = fileDesc.get('directory')
 
         for itemDesc in fileDesc['items']:
             name = itemDesc['name']
 
-            template = env.get_template(itemDesc['template']) if 'template' in itemDesc else defaultTemplate
+            templateName = itemDesc.get('template') or defaultTemplateName
+            if not templateName:
+                raise Exception("no template or default template")
+
+            template = env.get_template(templateName)
 
             output = template.render({"item": itemDesc})
 
-            os.makedirs(f"out/{destination}", exist_ok=True)
-            with open(f"out/{destination}/{name}.cs", 'w') as outputFile:
+            filename = f"{name}.override.cs" if itemDesc.get('override') else f"{name}.cs"
+            relativeDir = itemDesc.get('directory') or defaultRelativeDir
+
+            os.makedirs(f"out/{relativeDir}", exist_ok=True)
+            with open(f"out/{relativeDir}/{filename}", 'w') as outputFile:
                 outputFile.write(output)
 
-            shutil.copyfile(f"out/{destination}/{name}.cs", f"{userCodePath}/{destination}/{name}.cs")
+            os.makedirs(f"{userCodePath}/{relativeDir}", exist_ok=True)
+            shutil.copyfile(f"out/{relativeDir}/{filename}", f"{userCodePath}/{relativeDir}/{filename}")
 
 with os.scandir('project') as scan:
     for entry in scan:
